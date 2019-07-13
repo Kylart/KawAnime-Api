@@ -1,0 +1,44 @@
+{
+  "name": "kawanime-analytics",
+  "version": "1.0.0",
+  "description": "Api that will store all KawAnime's app related events",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "nodemon --exec \"babel-node -r src/config.js src\"",
+    "start": "node -r ./dist/config.js dist",
+    "build": "babel src -d dist",
+    "test": "NODE_ENV=test jest",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src"
+  },
+  "author": "Kylart <kylart.dev@gmail.com>",
+  "repository": {
+    "url": "https://github.com/Kylart/KawAnime-Api"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@babel/polyfill": "^7.4.4",
+    "dotenv": "^8.0.0",
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "eslint": "^6.0.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "jest": "^24.8.0",
+    "nodemon": "^1.19.1",
+    "supertest": "^4.0.2"
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/test/jest.init.js"
+    ]
+  }
+}
