@@ -4,8 +4,11 @@ import { createClient } from 'redis'
 import { route, error } from '../../utils'
 
 const client = createClient()
+const HGET = promisify(client.hget).bind(client)
 const HSET = promisify(client.hset).bind(client)
 const HKEYS = promisify(client.hkeys).bind(client)
+
+const IP_KEY = 'ips'
 
 const methods = {
   post,
@@ -18,12 +21,34 @@ const events = {
 
 const ROUTE_NAME = 'analytics'
 
-async function handleAppOpen (data) {
+/**
+  * @param { Request } request
+  * @param { String } refToken
+  */
+async function checkIp (request, refToken) {
+  const ip = request.headers['x-forwarded-for'] ||
+    request.connection.remoteAddress ||
+    request.socket.remoteAddress ||
+    null
+
+  const registeredToken = await HGET(IP_KEY, ip)
+
+  // This means that if someone ever changes their token manually, it will be seen
+  // as a duplicate.
+  if (registeredToken && registeredToken !== refToken) throw new Error('Duplicate tokens for same IP.')
+
+  if (!registeredToken) {
+    await HSET(IP_KEY, ip, refToken)
+  }
+}
+
+async function handleAppOpen (request, data) {
   const { eventName, userToken, version = '0.0.0' } = data
   const key = eventName
 
   if (!eventName || !userToken) throw new Error('Invalid body.')
 
+  await checkIp(request, userToken)
   await HSET(key, userToken, version)
 }
 
@@ -50,7 +75,7 @@ async function post (request, response) {
 
       if (!Object.keys(events).includes(eventName)) throw new Error('Unhandled event.')
 
-      await events[eventName](data)
+      await events[eventName](request, data)
 
       response.json({ success: true })
     } catch (e) {
