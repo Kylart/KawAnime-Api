@@ -15,3 +15,6 @@ yarn-error.log*
 
 .env
 .env.local
+
+# Redis dumps
+dump.rdb
