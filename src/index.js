@@ -7,10 +7,12 @@ import router from './router'
 
 const port = process.env.PORT || 3000
 
-const server = createServer({
+const opts = {
   key: readFileSync(process.env.SSL_KEY_PATH),
   cert: readFileSync(process.env.SSL_CERT_PATH)
-}, router)
+}
+
+const server = createServer(opts, router)
 
 if (process.env.NODE_ENV !== 'test') {
   server.listen(port, (err) => {
@@ -24,7 +26,9 @@ if (process.env.NODE_ENV !== 'test') {
   http((req, res) => {
     res.writeHead(301, { Location: 'https://api.kawanime.com' })
     res.end()
-  }).listen(8080)
+  }).listen(8080, () => {
+    console.log('Http server redirecting.')
+  })
 }
 
 // For testing purposes

@@ -1,5 +1,4 @@
 import { dispatch } from '../utils'
-import checkAuth from './auth'
 import routes from './routes'
 
 /**
@@ -7,5 +6,5 @@ import routes from './routes'
  * @param {Response} response
  */
 export default function (request, response) {
-  return dispatch(routes, request, response, checkAuth)
+  return dispatch(routes, request, response)
 }
