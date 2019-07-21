@@ -21,7 +21,7 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`server is listening on ${port}`)
   })
 
-  http.createServer((req, res) => {
+  http((req, res) => {
     res.writeHead(301, { Location: 'https://api.kawanime.com' })
     res.end()
   }).listen(8080)
